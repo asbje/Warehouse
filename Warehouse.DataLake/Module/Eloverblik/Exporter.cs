@@ -61,7 +61,7 @@ namespace Warehouse.DataLake.Module.Eloverblik
                 var meteringReadingsPerYearStream = meteringReadingsPerYear.Content.ReadAsStreamAsync().Result;
                 meteringReadingsPerYearRefine.UploadFile(Config, fileDate, "json", meteringReadingsPerYearStream, true, false, true, false);
             }
-            return new List<IRefine> { meteringPointsRefine, meteringReadingsPerYearRefine };
+            return new List<IRefine> { meteringPointsDetailsRefine, meteringReadingsPerYearRefine };
         }
     }
 }

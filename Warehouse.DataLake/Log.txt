@@ -1,0 +1,3 @@
+﻿Mangler:
+	Indlæg licens
+	Skriv en overfladisk md-fil

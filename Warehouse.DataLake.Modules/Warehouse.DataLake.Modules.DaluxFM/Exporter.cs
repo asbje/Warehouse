@@ -18,18 +18,12 @@ namespace Warehouse.DataLake.Modules.DaluxFM
 
         public Exporter(IConfigurationRoot config, ILogger log) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings) { }
 
+        /// <param name="data">[0]: estatesXmlStream, [1]: assetsXmlStream</param>
         public Exporter(IConfigurationRoot config, ILogger log, object[] data) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings)
         {
             useTestData = true;
             this.estatesXmlStream = data[0] as Stream;
             this.assetsXmlStream = data[1] as Stream;
-        }
-
-        public Exporter(IConfigurationRoot config, ILogger log, Stream estatesXmlStream, Stream assetsXmlStream) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings)
-        {
-            useTestData = true;
-            this.estatesXmlStream = estatesXmlStream;
-            this.assetsXmlStream = assetsXmlStream;
         }
 
         public override IEnumerable<IRefine> Export(bool ingestToDataLake)

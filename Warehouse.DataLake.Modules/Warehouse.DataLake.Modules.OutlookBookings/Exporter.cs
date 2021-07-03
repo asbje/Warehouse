@@ -13,52 +13,55 @@ namespace Warehouse.DataLake.Modules.OutlookBookings
         private static readonly string scheduleExpression = " 0 1 * * *";
         private static readonly string[] mandatoryAppSettings = new string[] { "FTPConnectionStringOutlookBookings" };
         private readonly bool useTestData = false;
-        private Stream estatesXmlStream;
-        private Stream assetsXmlStream;
+        private Stream bookingsStream;
 
         public Exporter(IConfigurationRoot config, ILogger log) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings) { }
 
+        /// <param name="data">[0]: bookingsStream</param>
         public Exporter(IConfigurationRoot config, ILogger log, object[] data) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings)
         {
             useTestData = true;
-            this.estatesXmlStream = data[0] as Stream;
-            this.assetsXmlStream = data[1] as Stream;
-        }
-
-        public Exporter(IConfigurationRoot config, ILogger log, Stream estatesXmlStream, Stream assetsXmlStream) : base(config, log, moduleName, scheduleExpression, mandatoryAppSettings)
-        {
-            useTestData = true;
-            this.estatesXmlStream = estatesXmlStream;
-            this.assetsXmlStream = assetsXmlStream;
+            this.bookingsStream = data[0] as Stream;
         }
 
         public override IEnumerable<IRefine> Export(bool ingestToDataLake)
         {
-            //if (!useTestData)
-            //{
-            //    var daluxFM = new Service.WebService(Config["DaluxFMCustomerId"], Config["DaluxFMApiKey"], Config["DaluxFMUser"], Config["DaluxFMPassword"]);
-            //    estatesXmlStream = daluxFM.GetEstates().Result;
-            //    assetsXmlStream = daluxFM.GetAssets().Result;
-            //}
+            var res = new List<IRefine>();
+            var fileDate = DateTime.UtcNow;
+            var service = new Service.FTPService(Config["FTPConnectionStringOutlookBookings"], Log);
 
+            var locationssRefine = new LocationsRefine(moduleName);
+            locationssRefine.UploadFile(Config, fileDate, false, true, false);
+            res.Add(locationssRefine);
 
+            if (!useTestData)
+            {
+                foreach (var item in service.GetData())
+                {
+                    var bookingsRefine = new BookingsRefine(moduleName, item.Value);
+                    bookingsRefine.UploadFile(Config, item.Key, "csv", item.Value, true, true, false, true);  //MANGLER MÅDE FOR ACCUMULATE TIL AT HÅNDTERE NPR FILER UPLAODES
+                    res.Add(bookingsRefine);
 
-            //var locationssRefine = new LocationsRefine(moduleName);
-            //var bookingsRefine = new BookingsRefine(moduleName, estatesXmlStream, locationssRefine);
-            //var lotsRefine = new LotsRefine(moduleName, estatesXmlStream);
-            //var assetsRefine = new AssetsRefine(ModuleName, assetsXmlStream, bookingsRefine, locationssRefine, Config["DaluxFMUniqueColumns"]);
+                    var partioningsRefine = new PartitioningsRefine(ModuleName, bookingsRefine, locationssRefine);
+                    partioningsRefine.UploadFile(Config, item.Key, false, false, true);
+                    res.Add(partioningsRefine);
+                }
 
-            //if (ingestToDataLake)
-            //{
-            //    var fileDate = DateTime.UtcNow;
-            //    bookingsRefine.UploadFile(Config, fileDate, "xml", estatesXmlStream, true, true, true, false);
-            //    locationssRefine.UploadFile(Config, fileDate, true, true, false);
-            //    lotsRefine.UploadFile(Config, fileDate, true, true, false);
-            //    assetsRefine.UploadFile(Config, fileDate, "xml", assetsXmlStream, true, true, true, false);
-            //}
+                //PAS PÅ MED DENNE - SLETTER MIT DATA
+                //service.DeleteFolderContent();
+            }
+            else
+            {
+                var bookingsRefine = new BookingsRefine(moduleName, bookingsStream);
+                bookingsRefine.UploadFile(Config, fileDate, "csv", bookingsStream, true, true, false, true);  //MANGLER MÅDE FOR ACCUMULATE TIL AT HÅNDTERE NPR FILER UPLAODES
+                res.Add(bookingsRefine);
 
-            //return new List<IRefine> { bookingsRefine, locationssRefine, lotsRefine };
-            return default;
+                var partioningsRefine = new PartitioningsRefine(ModuleName, bookingsRefine, locationssRefine);
+                partioningsRefine.UploadFile(Config, fileDate, false, false, true);
+                res.Add(partioningsRefine);
+            }
+
+            return res;
         }
     }
 }

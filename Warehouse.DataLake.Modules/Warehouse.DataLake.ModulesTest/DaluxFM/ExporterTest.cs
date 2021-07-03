@@ -30,7 +30,7 @@ namespace Warehouse.DataLake.ModulesTest.DaluxFM
             {
                 using var assetsStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Assets.xml"), FileMode.Open);
                 using var estatesStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Estates.xml"), FileMode.Open);
-                var exporter = new Modules.DaluxFM.Exporter(Config, loggerMock.Object, estatesStream, assetsStream);
+                var exporter = new Modules.DaluxFM.Exporter(Config, loggerMock.Object, new object[] { estatesStream, assetsStream });
                 res = BaseExporter.Run(exporter, saveToServer);
             }
 

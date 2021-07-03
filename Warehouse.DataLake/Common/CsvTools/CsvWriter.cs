@@ -12,6 +12,11 @@ namespace Warehouse.DataLake.Common.CsvTools
             if (!csv.Records.Any()) return;
 
             var stream = csv.Write(take);
+
+            var directory = Path.GetDirectoryName(destPath);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
             using var fileStream = new FileStream(destPath, FileMode.Create, FileAccess.Write);
             stream.CopyTo(fileStream);
         }

@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Warehouse.DataLake.Common.CsvTools;
-using Warehouse.DataLake.FunctionApp;
-using Warehouse.DataLake.Module;
+using Warehouse.DataLake.Modules;
 
 namespace Warehouse.DataLake.Common
 {

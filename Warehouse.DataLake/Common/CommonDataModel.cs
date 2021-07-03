@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
-using Warehouse.DataLake.FunctionApp;
-using Warehouse.DataLake.Module;
+using Warehouse.DataLake.Modules;
 
 [assembly: InternalsVisibleTo("Warehouse.DataLake.Common.Tests")]
 namespace Warehouse.DataLake.Common

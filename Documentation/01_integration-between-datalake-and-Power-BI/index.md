@@ -15,6 +15,7 @@ Users can only gain access to reports and datasets, if they have a Power BI lice
 
 ## The befits of using multiple datasets
 ![Splitting up datasets and report](powerbi-datasets.drawio.svg)
+
 Reports are often made of data from multiple sources, so by splitting up data and reports, it becomes easier to:
 * Reuse data in other reports
 * To divide the work of building reports and maintaining data from the warehouse

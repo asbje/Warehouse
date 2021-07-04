@@ -12,7 +12,7 @@ using Warehouse.DataLake.Common.CsvTools;
 [assembly: InternalsVisibleTo("Warehouse.DataLake.Common.Tests")]
 namespace Warehouse.DataLake.Common
 {
-    public class DataLake
+    class DataLake
     {
         public readonly Uri ServiceUri;
         public readonly IConfigurationRoot config;
@@ -56,29 +56,29 @@ namespace Warehouse.DataLake.Common
             SubDirectory = subDirectory.ToLower();
         }
 
-        //public IEnumerable<Ingest> GetFilesAsIngests(int? take = null)
-        //{
-        //    var res = new List<Ingest>();
-        //    var fileSystem = DataLakeServiceClient.GetFileSystemClient(BasePath);
-        //    if (!fileSystem.Exists())
-        //        yield break;
+        public IEnumerable<CsvSet> GetDecodedFilesFromDataLake(string tableName, DateTime from, DateTime to)
+        {
+            var res = new list<ingest>();
+            var filesystem = datalakeserviceclient.getfilesystemclient(basepath);
+            if (!filesystem.exists())
+                yield break;
 
-        //    var directory = fileSystem.GetDirectoryClient(string.Join('/', BaseDirectory, SubDirectory));
-        //    if (!directory.Exists())
-        //        yield break;
+            var directory = filesystem.getdirectoryclient(string.join('/', basedirectory, subdirectory));
+            if (!directory.exists())
+                yield break;
 
-        //    foreach (var item in fileSystem.GetPaths(directory.Path))
-        //        if (item.IsDirectory == false && Path.GetExtension(item.Name).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
-        //        {
-        //            var fileClient = fileSystem.GetFileClient(item.Name);
-        //            using var stream = fileClient.OpenRead();
-        //            var table = Path.GetFileNameWithoutExtension(item.Name);
-        //            var ingest = new Ingest(config, module, table, item.LastModified.UtcDateTime);
-        //            ingest.IngestCsv(stream, take);
-        //            yield return ingest;
-        //            res.Add(ingest);
-        //        }
-        //}
+            foreach (var item in filesystem.getpaths(directory.path))
+                if (item.isdirectory == false && path.getextension(item.name).equals(".csv", stringcomparison.invariantcultureignorecase))
+                {
+                    var fileclient = filesystem.getfileclient(item.name);
+                    using var stream = fileclient.openread();
+                    var table = path.getfilenamewithoutextension(item.name);
+                    var ingest = new ingest(config, module, table, item.lastmodified.utcdatetime);
+                    ingest.ingestcsv(stream, take);
+                    yield return ingest;
+                    res.add(ingest);
+                }
+        }
 
         /// <param name="fileName">Såsom "Lots.csv"</param>
         internal void SaveCsvToDataLake(string fileName, CsvSet csv)

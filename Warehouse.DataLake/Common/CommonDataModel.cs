@@ -11,7 +11,7 @@ using Warehouse.DataLake.Modules;
 [assembly: InternalsVisibleTo("Warehouse.DataLake.Common.Tests")]
 namespace Warehouse.DataLake.Common
 {
-    public class CommonDataModel
+    class CommonDataModel
     {
         private readonly DataLake dataLake;
 

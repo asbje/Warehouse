@@ -58,6 +58,11 @@ namespace Warehouse.DataLake.Modules
         {
             UploadFile(config, fileDate, null, null, false, uploadAsDecoded, uploadAsCurrent, uploadAsAccumulated);
         }
+
+        public IEnumerable<CsvSet> GetDecodedFilesFromDataLake(string tableName, DateTime from, DateTime to)
+        {
+            return default;
+        }
     }
 
     public interface IRefine
@@ -71,6 +76,7 @@ namespace Warehouse.DataLake.Modules
         string TableName { get; }
 
         void AddError(string error);
+        IEnumerable<CsvSet> GetDecodedFilesFromDataLake(string tableName, DateTime from, DateTime to);
         void Refine();
         void UploadFile(IConfigurationRoot config, DateTime fileDate, bool uploadAsDecoded, bool uploadAsCurrent, bool uploadAsAccumulated);
         void UploadFile(IConfigurationRoot config, DateTime fileDate, string rawFileExtension, Stream rawStream, bool uploadAsRaw, bool uploadAsDecoded, bool uploadAsCurrent, bool uploadAsAccumulated);

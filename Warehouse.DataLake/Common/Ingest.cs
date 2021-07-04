@@ -7,7 +7,7 @@ using Warehouse.DataLake.Common.CsvTools;
 [assembly: InternalsVisibleTo("Warehouse.DataLakeTest")]
 namespace Warehouse.DataLake.Common
 {
-    public class Ingest
+    class Ingest
     {
         public string Module { get; }
         public string Table { get; }
@@ -65,7 +65,7 @@ namespace Warehouse.DataLake.Common
         }
     }
 
-    public enum SubDirectory
+    enum SubDirectory
     {
         accumulate,
         current,

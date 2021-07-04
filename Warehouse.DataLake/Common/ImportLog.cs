@@ -10,7 +10,7 @@ namespace Warehouse.DataLake.Common
     /// <summary>
     /// Creates / updates a csv log with import informations
     /// </summary>
-    public class ImportLog
+    class ImportLog
     {
         public static CsvSet CreateLog(IConfigurationRoot config, string module, string logTableName, List<IRefine> refines, bool uploadToDataLake)
         {

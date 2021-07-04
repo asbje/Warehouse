@@ -1,5 +1,11 @@
 # Warehouse.DataLake
 
-A software that easily integrates with Azure data lake to contain large amounts of data.
+This solution makes it easy to write c# modules that fetches data from different systems and pushes them into an Azure data lake, that can contain large amounts of data.
 
-It also implements Common Data Models so it's easy to hook up with Power BI through Power BI Data flow.
+It also handles creation of Common Data Models, that makes it easy to make integrations between data lake and Power BI, with Power BI Dataflows.
+
+[01: Integration between data lake and Power BI](Documentation/01_integration-between-datalake-and-Power-BI/index.md)
+
+[02: From data lake to Power BI with data flows](Documentation/02_power-BI-integration-in-depth/index.md)
+
+[The license](License.md)

@@ -8,19 +8,18 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Warehouse.DataLakeTest")]
 namespace Warehouse.DataLake.Modules
 {
-    public class NextRun
+    internal class NextRun
     {
+        internal string FunctionAppName { get; }
         private static readonly string filePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "functionAppLog.json"));
         private static Dictionary<string, DateTime> runs;
 
-        public string FunctionAppName { get; }
-
-        public NextRun(string functionAppName)
+        internal NextRun(string functionAppName)
         {
             FunctionAppName = functionAppName;
         }
 
-        public bool DoRun(DateTime now, string scheduleExpression)
+        internal bool DoRun(DateTime now, string scheduleExpression)
         {
             var schedule = CrontabSchedule.Parse(scheduleExpression);
             var lastRun = GetLastRun();
@@ -32,7 +31,7 @@ namespace Warehouse.DataLake.Modules
             return minAgeLimitOnLastRun && NotOlderThanOneHour;
         }
 
-        public void SetLastRun(DateTime lastRunUtcDateTime)
+        internal void SetLastRun(DateTime lastRunUtcDateTime)
         {
             if (runs == null)
                 GetRuns();
@@ -47,7 +46,7 @@ namespace Warehouse.DataLake.Modules
             serializer.Serialize(file, runs);
         }
 
-        public DateTime GetLastRun()
+        internal DateTime GetLastRun()
         {
             if (runs == null)
                 GetRuns();
@@ -55,7 +54,7 @@ namespace Warehouse.DataLake.Modules
             return runs.TryGetValue(FunctionAppName, out DateTime res) ? res : DateTime.MinValue;
         }
 
-        public void PurgeLog()
+        internal void PurgeLog()
         {
             runs = null; // new Dictionary<string, DateTime>();
             if (File.Exists(filePath))

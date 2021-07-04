@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -10,12 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Warehouse.DataLake.Modules;
 
+[assembly: InternalsVisibleTo("Warehouse.DataLakeTest")]
 namespace Warehouse.DataLake.FunctionApps
 {
-    public static class DurableFunctionApp
+    internal static class DurableFunctionApp
     {
         [FunctionName("Call_modules_each_hour")]
-        public static async Task Run([OrchestrationTrigger] IDurableOrchestrationContext context, ILogger log)
+        internal static async Task CallModulesEachHour([OrchestrationTrigger] IDurableOrchestrationContext context, ILogger log)
         {
             var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).AddEnvironmentVariables().Build();
             await context.CallActivityAsync("DoCleanup", null);
@@ -34,7 +36,7 @@ namespace Warehouse.DataLake.FunctionApps
             context.ContinueAsNew(null);
         }
 
-        public static ExportResult Run(string moduleName, IConfiguration config, ILogger log, object[] data = null)
+        internal static ExportResult Run(string moduleName, IConfiguration config, ILogger log, object[] data = null)
         {
             var dllPath = GetModuleDllPath(moduleName);
             if (!File.Exists(dllPath))

@@ -10,7 +10,7 @@ namespace Warehouse.DataLake.Modules.OutlookBookings
     public class Exporter : BaseExporter
     {
         private static readonly string moduleName = "OutlookBookings";
-        private static readonly string scheduleExpression = " 0 1 * * *";
+        private static readonly string scheduleExpression = " 0 * * * *";
         private static readonly string[] mandatoryAppSettings = new string[] { "FTPConnectionStringOutlookBookings" };
         private readonly bool useTestData = false;
         private Stream bookingsStream;
@@ -60,7 +60,6 @@ namespace Warehouse.DataLake.Modules.OutlookBookings
                 partioningsRefine.UploadFile(Config, fileDate, false, false, true);
                 res.Add(partioningsRefine);
             }
-
             return res;
         }
     }

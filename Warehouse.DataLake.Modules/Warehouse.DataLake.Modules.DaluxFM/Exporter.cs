@@ -24,6 +24,7 @@ namespace Warehouse.DataLake.Modules.DaluxFM
             useTestData = true;
             this.estatesXmlStream = data[0] as Stream;
             this.assetsXmlStream = data[1] as Stream;
+            
         }
 
         public override IEnumerable<IRefine> Export(bool ingestToDataLake)

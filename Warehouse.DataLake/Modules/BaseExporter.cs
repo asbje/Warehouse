@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NCrontab;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -47,14 +46,19 @@ namespace Warehouse.DataLake.Modules
             return result;
         }
 
+        public virtual IEnumerable<IRefine> Export(bool ingestToDataLake)
+        {
+            return default;
+        }
+
         /// <summary>If called module should be run, due to the current module scheduleExpression</summary>
-        public bool DoRunSchedule(DateTime now)
+        bool IExporter.DoRunSchedule(DateTime now)
         {
             return new NextRun("Call_modules_each_hour").DoRun(now, ScheduleExpression);
         }
 
         /// <summary>If called module mandatory appSettings are present</summary>
-        public bool VerifyAppSettings()
+        bool IExporter.VerifyAppSettings()
         {
             var res = true;
             foreach (var name in MandatoryAppSettings)
@@ -67,12 +71,7 @@ namespace Warehouse.DataLake.Modules
             return res;
         }
 
-        public virtual IEnumerable<IRefine> Export(bool ingestToDataLake)
-        {
-            return default;
-        }
-
-        public JObject CreateCommonDataModel(List<IRefine> refines, bool uploadToDataLake)
+        JObject IExporter.CreateCommonDataModel(List<IRefine> refines, bool uploadToDataLake)
         {
             var dataLake = new Common.DataLake(Config, ModuleName, "current");
 
@@ -91,7 +90,7 @@ namespace Warehouse.DataLake.Modules
             return default;
         }
 
-        public CsvSet CreateImportLog(List<IRefine> refines, bool uploadToDataLake)
+        CsvSet IExporter.CreateImportLog(List<IRefine> refines, bool uploadToDataLake)
         {
             return ImportLog.CreateLog(Config, ModuleName, "importLog", refines, uploadToDataLake);
         }
@@ -99,10 +98,10 @@ namespace Warehouse.DataLake.Modules
 
     public interface IExporter
     {
-        bool DoRunSchedule(DateTime now);
-        bool VerifyAppSettings();
         IEnumerable<IRefine> Export(bool ingestToDataLake);
-        JObject CreateCommonDataModel(List<IRefine> refines, bool uploadToDataLake);
-        CsvSet CreateImportLog(List<IRefine> refines, bool uploadToDataLake);
+        internal bool DoRunSchedule(DateTime now);
+        internal bool VerifyAppSettings();
+        internal JObject CreateCommonDataModel(List<IRefine> refines, bool uploadToDataLake);
+        internal CsvSet CreateImportLog(List<IRefine> refines, bool uploadToDataLake);
     }
 }

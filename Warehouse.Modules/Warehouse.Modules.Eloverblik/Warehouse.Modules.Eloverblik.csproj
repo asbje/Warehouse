@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" Version="4.16.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Warehouse\Warehouse.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="set targetFolder=&quot;$(SolutionDir)\Warehouse\Modules\DllLibrary\$(ProjectName)\&quot;&#xD;&#xA;RD /S /Q &quot;%25targetFolder%25&quot;&#xD;&#xA;xcopy /y /d  $(TargetPath) &quot;%25targetFolder%25&quot;" />
+  </Target>
+
+</Project>

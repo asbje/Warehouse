@@ -8,4 +8,4 @@ It also handles creation of Common Data Models, that enables integrations betwee
 
 [02: From data lake to Power BI with data flows](Documentation/02_power-BI-integration-in-depth/index.md)
 
-[The license](/License.md)
+[The license](LICENSE.md)

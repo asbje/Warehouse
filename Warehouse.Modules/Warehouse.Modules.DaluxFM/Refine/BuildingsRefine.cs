@@ -5,11 +5,11 @@ using Warehouse.Common.CsvTools;
 
 namespace Warehouse.Modules.DaluxFM.Refine
 {
-    public class BuildingsRefine : BaseRefine
+    public class BuildingsRefine : RefineBase
     {
         public XDocument Data { get; set; }
 
-        public BuildingsRefine(string moduleName, Stream xmlStream) : base(moduleName, "buildings")
+        public BuildingsRefine(IExporter exporter, Stream xmlStream) : base(exporter, "buildings")
         {
             xmlStream.Position = 0;
             Data = XDocument.Load(xmlStream);

@@ -4,13 +4,13 @@ using Warehouse.Common.CsvTools;
 
 namespace Warehouse.Modules.OutlookBookings.Refine
 {
-    public class BookingsRefine : BaseRefine
+    public class BookingsRefine : RefineBase
     {
         public CsvSet WashedCsv { get; }
 
         private readonly Stream csvStream;
 
-        public BookingsRefine(string moduleName, Stream csvStream) : base(moduleName, "bookings")
+        public BookingsRefine(IExporter exporter, Stream csvStream) : base(exporter, "bookings")
         {
             this.csvStream = csvStream;
             Refine();

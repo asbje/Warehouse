@@ -53,7 +53,7 @@ namespace Warehouse.FunctionApps
                     objects.Add(item);
 
             var instance = Activator.CreateInstance(type, objects.ToArray()) as IExporter;
-            return BaseExporter.Run(instance, false);
+            return ExporterBase.Run(instance, false);
         }
 
         private static string GetModuleDllPath(string moduleName)

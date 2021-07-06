@@ -2,10 +2,10 @@
 
 namespace Warehouse.Modules.OutlookBookings.Refine
 {
-    public class LocationsRefine : BaseRefine
+    public class LocationsRefine : RefineBase
     {
 
-        public LocationsRefine(string moduleName) : base(moduleName, "locations")
+        public LocationsRefine(IExporter exporter) : base(exporter, "locations")
         {
             Refine();
         }

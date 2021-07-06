@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Warehouse.Common.CsvTools;
+using Warehouse.Modules;
 using Warehouse.Modules.DaluxFM.Refine;
 using Warehouse.ModulesTest.Helpers;
 
@@ -14,10 +15,11 @@ namespace Warehouse.ModulesTest.DaluxFM.Refine
         public void EstatesRefine()
         {
             using var estatesStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Estates.xml"), FileMode.Open);
-
-            var buildingsRefine = new BuildingsRefine("DaluxFM", estatesStream);
-            var estatesRefine = new EstatesRefine("DaluxFM", estatesStream, buildingsRefine);
-            var lotsRefine = new LotsRefine("DaluxFM", estatesStream);
+            
+            var exporter = new ExporterBase(null, null, "DaluxFM", "0 * * * *", null);
+            var buildingsRefine = new BuildingsRefine(exporter, estatesStream);
+            var estatesRefine = new EstatesRefine(exporter, estatesStream, buildingsRefine);
+            var lotsRefine = new LotsRefine(exporter, estatesStream);
 
             Assert.IsFalse(estatesRefine.HasErrors);
             Assert.IsFalse(buildingsRefine.HasErrors);

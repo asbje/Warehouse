@@ -127,7 +127,6 @@ namespace Warehouse.Common.CsvTools
             var res = new Dictionary<int, Dictionary<int, object>>();
             var itemsToRemove = new List<int>();
 
-
             foreach (var filter in filters)
             {
                 if (csv.TryGetRecordCol(filter.Key, out int headerCol))
@@ -161,41 +160,5 @@ namespace Warehouse.Common.CsvTools
                 throw new Exception("Error in reading headerName. A programmer must take care of this issue.");
             }
         }
-
-
-
-        ////Denne virker ikke. Når jeg fjerner en column, så skal de næste columns have deres columnNumber nedbragt med en - lidt for kompliceret til at jeg lige nu prioritere at lave denne færdig
-        //public static CsvParser RemoveUnusedHeaders(this CsvParser csv)
-        //{
-        //    var emptyCols = new List<int>();
-        //    var min = csv.Headers.Min(o => o.Key);
-        //    var max = csv.Headers.Max(o => o.Key);
-        //    for (int c = min; c <= max; c++)
-        //    {
-        //        var isEmpty = true;
-        //        for (int r = csv.RowLimit.Min; r < csv.RowLimit.Max; r++)
-        //        {
-        //            if(csv.Records.TryGetValue((c, r), out _))
-        //            {
-        //                isEmpty = false;
-        //                break;
-        //            }
-        //        }
-        //        if (isEmpty)
-        //            emptyCols.Add(c);
-        //    }
-
-
-        //    foreach (var c in emptyCols)
-        //    {
-        //        for (int r = csv.RowLimit.Min; r < csv.RowLimit.Max; r++)
-        //        {
-        //            csv.Records.Remove((c, r));
-        //        }
-        //        csv.Headers.Remove(c);
-        //        csv.ColTypes.Remove(c);
-        //    }
-        //    return csv;
-        //}
     }
 }

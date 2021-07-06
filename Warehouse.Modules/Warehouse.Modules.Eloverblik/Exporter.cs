@@ -8,7 +8,7 @@ using Warehouse.Modules.Eloverblik.Service;
 
 namespace Warehouse.Modules.Eloverblik
 {
-    public class Exporter : BaseExporter
+    public class Exporter : ExporterBase
     {
         private static readonly string moduleName = "Eloverblik";
         private static readonly string scheduleExpression = "0 1 * * *";
@@ -43,18 +43,18 @@ namespace Warehouse.Modules.Eloverblik
             if(!useTestData)
                 meteringPoints = service.GetMeteringPoints().Result;
             
-            var meteringPointsRefine = new MeteringPointsRefine(moduleName, meteringPoints);
+            var meteringPointsRefine = new MeteringPointsRefine(this, meteringPoints);
             var meteringPointIds = meteringPointsRefine.GetMeteringPointIds();
 
             if (!useTestData)
                 meteringPointsDetails = service.GetMeteringPointsDetails(meteringPointIds).Result;
 
-            var meteringPointsDetailsRefine = new MeteringPointsDetailsRefine(moduleName, meteringPointsDetails, meteringPointsRefine);
+            var meteringPointsDetailsRefine = new MeteringPointsDetailsRefine(this, meteringPointsDetails, meteringPointsRefine);
 
             if (!useTestData)
                 meteringReadingsPerYear = service.GetMeterDataTimeSeries(meteringPointIds, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), TimeAggregation.Year).Result;
 
-            var meteringReadingsPerYearRefine = new MeteringReadingsRefine(moduleName, "readingsPerYear", meteringReadingsPerYear);
+            var meteringReadingsPerYearRefine = new MeteringReadingsRefine(this, "readingsPerYear", meteringReadingsPerYear);
 
             if (ingestToDataLake)
             {

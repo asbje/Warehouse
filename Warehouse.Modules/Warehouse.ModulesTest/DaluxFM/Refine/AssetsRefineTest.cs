@@ -3,6 +3,7 @@ using System.IO;
 using Warehouse.Common.CsvTools;
 using Warehouse.ModulesTest.Helpers;
 using Warehouse.Modules.DaluxFM.Refine;
+using Warehouse.Modules;
 
 namespace Warehouse.ModulesTest.DaluxFM.Refine
 {
@@ -16,9 +17,10 @@ namespace Warehouse.ModulesTest.DaluxFM.Refine
             using var estatesStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Estates.xml"), FileMode.Open);
             using var assetsStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM" ,"In", "Assets.xml"), FileMode.Open);
 
-            var buildingsRefine = new BuildingsRefine("DaluxFM", estatesStream);
-            var estatesRefine = new EstatesRefine("DaluxFM", estatesStream, buildingsRefine);
-            var assetsRefine = new AssetsRefine("DaluxFM", assetsStream, estatesRefine, buildingsRefine, "Aftagernummer");
+            var exporter = new ExporterBase(null, null, "DaluxFM", "0 * * * *", null);
+            var buildingsRefine = new BuildingsRefine(exporter, estatesStream);
+            var estatesRefine = new EstatesRefine(exporter, estatesStream, buildingsRefine);
+            var assetsRefine = new AssetsRefine(exporter, assetsStream, estatesRefine, buildingsRefine, "Aftagernummer");
 
             Assert.IsFalse(assetsRefine.HasErrors);
             Assert.IsFalse(estatesRefine.HasErrors);

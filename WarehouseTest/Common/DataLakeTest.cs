@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
+using Warehouse.Common;
 using WarehouseTest.Helpers;
 
 namespace WarehouseTest.Common
@@ -8,12 +10,12 @@ namespace WarehouseTest.Common
     public class DataLakeTest : GenericTest
     {
         //Should not be run directly
-        //[TestMethod]
-        //public void GetAllInCurrent()
-        //{
-        //    var dataLake = new DataLake(Config, "DaluxFM", "current");
-        //    var ingests = dataLake.GetFilesAsIngests(200);  //By only taking 200 rows, it should be possible to get the right datatypes
-        //}
+        [TestMethod]
+        public void GetAllInCurrent()
+        {
+            var dataLake = new DataLake(Config, "DaluxFM", "current");
+            var ingests = dataLake.GetDecodedFilesFromDataLake("estates", DateTime.MinValue, DateTime.MaxValue).ToList();
+        }
 
         //[TestMethod]
         //public void UploadToFolder()

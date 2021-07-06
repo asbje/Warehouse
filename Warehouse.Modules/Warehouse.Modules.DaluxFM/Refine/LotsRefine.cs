@@ -3,11 +3,11 @@ using System.Xml.Linq;
 
 namespace Warehouse.Modules.DaluxFM.Refine
 {
-    public class LotsRefine : BaseRefine
+    public class LotsRefine : RefineBase
     {
         public XDocument Data { get; set; }
 
-        public LotsRefine(string moduleName, Stream xmlStream) : base(moduleName, "lots")
+        public LotsRefine(IExporter exporter, Stream xmlStream) : base(exporter, "lots")
         {
             xmlStream.Position = 0;
             Data = XDocument.Load(xmlStream);

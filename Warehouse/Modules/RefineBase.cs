@@ -7,20 +7,20 @@ using Warehouse.Common.CsvTools;
 
 namespace Warehouse.Modules
 {
-    public class BaseRefine : IRefine
+    public class RefineBase : IRefine
     {
         public List<string> Errors { get; private set; }
         public DateTime? FileDate { get; set; }
         public CsvSet CsvSet { get; set; }
-        public string ModuleName { get; }
+        public IExporter Exporter { get; }
         public string TableName { get; }
         public bool IsUploaded { get; set; }
 
         public bool HasErrors { get { return Errors != null && Errors.Count > 0; } }
 
-        public BaseRefine(string moduleName, string tableName)
+        public RefineBase(IExporter exporter, string tableName)
         {
-            ModuleName = moduleName;
+            Exporter = exporter;
             TableName = tableName;
             CsvSet = new CsvSet();
         }
@@ -40,11 +40,13 @@ namespace Warehouse.Modules
             if (HasErrors)
                 return;
 
-            var ingest = new Ingest(config, ModuleName, TableName);
+            var savePerHour = NextRun.GetHourSpanBetweenRuns(Exporter.ScheduleExpression) < 24;
+
+            var ingest = new Ingest(config, Exporter.ModuleName, TableName);
             if (uploadAsRaw)
-                ingest.SaveAsRaw(rawStream, rawFileExtension, fileDate);
+                ingest.SaveAsRaw(rawStream, rawFileExtension, fileDate, savePerHour);
             if (uploadAsDecoded)
-                ingest.SaveASDecoded(CsvSet, fileDate);
+                ingest.SaveASDecoded(CsvSet, fileDate, savePerHour);
             if (uploadAsCurrent)
                 ingest.SaveAsCurrent(CsvSet, fileDate);
             if (uploadAsAccumulated)
@@ -72,7 +74,9 @@ namespace Warehouse.Modules
         DateTime? FileDate { get; set; }
         bool HasErrors { get; }
         bool IsUploaded { get; set; }
-        string ModuleName { get; }
+        //string ModuleName { get; }
+        IExporter Exporter { get; }
+
         string TableName { get; }
 
         void AddError(string error);

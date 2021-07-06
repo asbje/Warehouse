@@ -31,6 +31,13 @@ namespace Warehouse.Modules
             return minAgeLimitOnLastRun && NotOlderThanOneHour;
         }
 
+        internal static double GetHourSpanBetweenRuns(string scheduleExpression)
+        {
+            var schedule = CrontabSchedule.Parse(scheduleExpression);
+            var nextRunFromLastRun = schedule.GetNextOccurrence(DateTime.MinValue);
+            return (schedule.GetNextOccurrence(nextRunFromLastRun.AddSeconds(1)) - nextRunFromLastRun).TotalHours;
+        }
+
         internal void SetLastRun(DateTime lastRunUtcDateTime)
         {
             if (runs == null)

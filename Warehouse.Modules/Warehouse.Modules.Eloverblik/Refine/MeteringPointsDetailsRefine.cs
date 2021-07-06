@@ -7,12 +7,12 @@ using Warehouse.Modules.Eloverblik.Refine.Models;
 
 namespace Warehouse.Modules.Eloverblik.Refine
 {
-    public class MeteringPointsDetailsRefine : BaseRefine
+    public class MeteringPointsDetailsRefine : RefineBase
     {
         public IEnumerable<MeteringPointDetail> Data { get; set; }
         private readonly MeteringPointsRefine meteringPointsRefine;
 
-        public MeteringPointsDetailsRefine(string moduleName, HttpResponseMessage response, MeteringPointsRefine meteringPointsRefine):base(moduleName, "meteringPointsDetails")
+        public MeteringPointsDetailsRefine(IExporter exporter, HttpResponseMessage response, MeteringPointsRefine meteringPointsRefine):base(exporter, "meteringPointsDetails")
         {
             if (response.IsSuccessStatusCode)
                 Data = JsonConvert.DeserializeObject<MeteringPointDetailResult>(response.Content.ReadAsStringAsync().Result)?.result.Select(o => o.result);

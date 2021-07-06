@@ -13,10 +13,7 @@ namespace Warehouse.Common.CsvTools
         /// <param name="headerName">The header to filter on</param>
         /// <param name="values">If a value is present in the looked up column, the row will be included</param>
         /// <returns></returns>
-        public static CsvSet Filter(this CsvSet csv, string headerName, string value)
-        {
-            return Filter(csv, headerName, new[] { value });
-        }
+        public static CsvSet Filter(this CsvSet csv, string headerName, string value) => Filter(csv, headerName, new[] { value });
 
 
         /// <summary>
@@ -33,10 +30,7 @@ namespace Warehouse.Common.CsvTools
             var r = 0;
             foreach (var lookupValue in values.Distinct())
                 foreach (var recordRows in csv.GetRecordRows(headerName, lookupValue))
-                {
-                    res.AddRecords(r, recordRows.Value);
-                    r++;
-                }
+                    res.AddRecords(r++, recordRows.Value);
 
             return res;
         }

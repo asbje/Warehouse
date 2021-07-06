@@ -7,10 +7,10 @@ using Warehouse.Modules.OutlookBookings.Refine;
 
 namespace Warehouse.Modules.OutlookBookings
 {
-    public class Exporter : BaseExporter
+    public class Exporter : ExporterBase
     {
         private static readonly string moduleName = "OutlookBookings";
-        private static readonly string scheduleExpression = " 0 * * * *";
+        private static readonly string scheduleExpression = "0 * * * *";
         private static readonly string[] mandatoryAppSettings = new string[] { "FTPConnectionStringOutlookBookings" };
         private readonly bool useTestData = false;
         private Stream bookingsStream;
@@ -30,7 +30,7 @@ namespace Warehouse.Modules.OutlookBookings
             var fileDate = DateTime.UtcNow;
             var service = new Service.FTPService(Config["FTPConnectionStringOutlookBookings"], Log);
 
-            var locationssRefine = new LocationsRefine(moduleName);
+            var locationssRefine = new LocationsRefine(this);
             locationssRefine.UploadFile(Config, fileDate, false, true, false);
             res.Add(locationssRefine);
 
@@ -38,11 +38,11 @@ namespace Warehouse.Modules.OutlookBookings
             {
                 foreach (var item in service.GetData())
                 {
-                    var bookingsRefine = new BookingsRefine(moduleName, item.Value);
+                    var bookingsRefine = new BookingsRefine(this, item.Value);
                     bookingsRefine.UploadFile(Config, item.Key, "csv", item.Value, true, true, false, true);  //MANGLER MÅDE FOR ACCUMULATE TIL AT HÅNDTERE NPR FILER UPLAODES
                     res.Add(bookingsRefine);
 
-                    var partioningsRefine = new PartitioningsRefine(ModuleName, bookingsRefine, locationssRefine);
+                    var partioningsRefine = new PartitioningsRefine(this, bookingsRefine, locationssRefine);
                     partioningsRefine.UploadFile(Config, item.Key, false, false, true);
                     res.Add(partioningsRefine);
                 }
@@ -52,11 +52,11 @@ namespace Warehouse.Modules.OutlookBookings
             }
             else
             {
-                var bookingsRefine = new BookingsRefine(moduleName, bookingsStream);
+                var bookingsRefine = new BookingsRefine(this, bookingsStream);
                 bookingsRefine.UploadFile(Config, fileDate, "csv", bookingsStream, true, true, false, true);  //MANGLER MÅDE FOR ACCUMULATE TIL AT HÅNDTERE NPR FILER UPLAODES
                 res.Add(bookingsRefine);
 
-                var partioningsRefine = new PartitioningsRefine(ModuleName, bookingsRefine, locationssRefine);
+                var partioningsRefine = new PartitioningsRefine(this, bookingsRefine, locationssRefine);
                 partioningsRefine.UploadFile(Config, fileDate, false, false, true);
                 res.Add(partioningsRefine);
             }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Warehouse.Common.CsvTools;
+using Warehouse.Modules;
 using Warehouse.Modules.Eloverblik.Refine;
 using Warehouse.ModulesTest.Helpers;
 
@@ -15,7 +16,8 @@ namespace Warehouse.ModulesTest.Eloverblik.Refine
         {
             var meteringReadings = ExporterTest.GetData("RedingsPerYear_2020.json");
 
-            var meteringReadingsRefine = new MeteringReadingsRefine("Eloverblik", "readingsPerYear", meteringReadings);
+            var exporter = new ExporterBase(null, null, "Eloverblik", "0 * * * *", null);
+            var meteringReadingsRefine = new MeteringReadingsRefine(exporter, "readingsPerYear", meteringReadings);
             
             Assert.IsFalse(meteringReadingsRefine.HasErrors);
 

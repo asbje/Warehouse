@@ -31,10 +31,7 @@ namespace Warehouse.Common.CsvTools
             int r = 0;
             string line;
             while ((line = reader.ReadLine()) != null && (take == null || take != null && r < take))
-            {
-                ReadRow(line, r);
-                r++;
-            }
+                ReadRow(line, r++);
         }
 
         private void ReadRow(string input, int? r)
@@ -64,8 +61,7 @@ namespace Warehouse.Common.CsvTools
                 foreach (Match match in csvSplit.Matches(input))
                 {
                     var val = match.Value?.TrimStart(',').Trim('"');
-                    res.Add(c, val);
-                    c++;
+                    res.Add(c++, val);
                 }
             }
             return res;

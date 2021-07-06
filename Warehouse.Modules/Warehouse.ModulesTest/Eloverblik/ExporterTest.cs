@@ -28,7 +28,7 @@ namespace Warehouse.ModulesTest.Eloverblik
             if (useDataFromService)
             {
                 var exporter = new Modules.Eloverblik.Exporter(Config, loggerMock.Object);
-                res = BaseExporter.Run(exporter, saveToServer);
+                res = ExporterBase.Run(exporter, saveToServer);
             }
             else
             {
@@ -36,7 +36,7 @@ namespace Warehouse.ModulesTest.Eloverblik
                 var meteringPointsDetails = GetData("MeteringPointsDetails.json");
                 var readingsPerYear = GetData("RedingsPerYear_2020.json");
                 var exporter = new Modules.Eloverblik.Exporter(Config, loggerMock.Object, meteringPoints, meteringPointsDetails, readingsPerYear);
-                res = BaseExporter.Run(exporter, saveToServer);
+                res = ExporterBase.Run(exporter, saveToServer);
             }
 
             var errors = res.Refines.Where(o => o.HasErrors);

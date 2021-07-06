@@ -9,15 +9,15 @@ using Warehouse.Common.CsvTools;
 
 namespace Warehouse.Modules
 {
-    public class BaseExporter : IExporter
+    public class ExporterBase : IExporter
     {
+        public string ModuleName { get; }
+        public string ScheduleExpression { get; }
         public readonly IConfigurationRoot Config;
         public readonly ILogger Log;
-        public readonly string ModuleName;
-        public readonly string ScheduleExpression;
         public readonly List<string> MandatoryAppSettings = new List<string> { "RunModules", "DataLakeAccountName", "DataLakeAccountKey", "DataLakeServiceUrl", "DataLakeBasePath" };
 
-        public BaseExporter(IConfigurationRoot config, ILogger log, string moduleName, string scheduleExpression, string[] mandatoryAppSettings)
+        public ExporterBase(IConfigurationRoot config, ILogger log, string moduleName, string scheduleExpression, string[] mandatoryAppSettings)
         {
             Config = config;
             Log = log;
@@ -98,6 +98,8 @@ namespace Warehouse.Modules
 
     public interface IExporter
     {
+        string ModuleName { get; }
+        public string ScheduleExpression { get; }
         IEnumerable<IRefine> Export(bool ingestToDataLake);
         internal bool DoRunSchedule(DateTime now);
         internal bool VerifyAppSettings();

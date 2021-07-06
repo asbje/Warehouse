@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using Warehouse.Modules;
 using Warehouse.Modules.Eloverblik.Refine;
 using Warehouse.Modules.Eloverblik.Service;
 using Warehouse.ModulesTest.Helpers;
@@ -44,7 +45,8 @@ namespace Warehouse.ModulesTest.Eloverblik.Service
         public void GetMeteringPointsDetailsAll()
         {
             var response = Service.GetMeteringPoints().Result;
-            var meteringPointIds = new MeteringPointsRefine("Eloverblik", response).GetMeteringPointIds();
+            var exporter = new ExporterBase(null, null, "Eloverblik", "0 * * * *", null);
+            var meteringPointIds = new MeteringPointsRefine(exporter, response).GetMeteringPointIds();
             var result = Service.GetMeteringPointsDetails(meteringPointIds).Result;
             ToFile(result.Content.ReadAsStringAsync().Result, "MeteringPointsDetails.json");
         }
@@ -73,7 +75,8 @@ namespace Warehouse.ModulesTest.Eloverblik.Service
         public void GetMeterDataTimeSeriesForAYearForAllPoints()
         {
             var response = Service.GetMeteringPoints().Result;
-            var meteringPointIds = new MeteringPointsRefine("Eloverblik", response).GetMeteringPointIds();
+            var exporter = new ExporterBase(null, null, "Eloverblik", "0 * * * *", null);
+            var meteringPointIds = new MeteringPointsRefine(exporter, response).GetMeteringPointIds();
             var dateFrom = new DateTime(2020, 1, 1);
             var dateTo = new DateTime(2021, 1, 1);
 

@@ -24,14 +24,14 @@ namespace Warehouse.ModulesTest.DaluxFM
             if (useDataFromService)
             {
                 var exporter = new Modules.DaluxFM.Exporter(Config, loggerMock.Object);
-                res = BaseExporter.Run(exporter, saveToServer);
+                res = ExporterBase.Run(exporter, saveToServer);
             }
             else
             {
                 using var assetsStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Assets.xml"), FileMode.Open);
                 using var estatesStream = new FileStream(Path.Combine(BasePath, "Files", "DaluxFM", "In", "Estates.xml"), FileMode.Open);
                 var exporter = new Modules.DaluxFM.Exporter(Config, loggerMock.Object, new object[] { estatesStream, assetsStream });
-                res = BaseExporter.Run(exporter, saveToServer);
+                res = ExporterBase.Run(exporter, saveToServer);
             }
 
             var errors = res.Refines.Where(o => o.HasErrors);

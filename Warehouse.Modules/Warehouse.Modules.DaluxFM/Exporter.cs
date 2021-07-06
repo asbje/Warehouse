@@ -7,7 +7,7 @@ using Warehouse.Modules.DaluxFM.Refine;
 
 namespace Warehouse.Modules.DaluxFM
 {
-    public class Exporter : BaseExporter
+    public class Exporter : ExporterBase
     {
         private static readonly string moduleName = "DaluxFM";
         private static readonly string scheduleExpression = " 0 1 * * *";
@@ -36,10 +36,10 @@ namespace Warehouse.Modules.DaluxFM
                 assetsXmlStream = daluxFM.GetAssets().Result;
             }
 
-            var buildingsRefine = new BuildingsRefine(moduleName, estatesXmlStream);
-            var estatesRefine = new EstatesRefine(moduleName, estatesXmlStream, buildingsRefine);
-            var lotsRefine = new LotsRefine(moduleName, estatesXmlStream);
-            var assetsRefine = new AssetsRefine(ModuleName, assetsXmlStream, estatesRefine, buildingsRefine, Config["DaluxFMUniqueColumns"]);
+            var buildingsRefine = new BuildingsRefine(this, estatesXmlStream);
+            var estatesRefine = new EstatesRefine(this, estatesXmlStream, buildingsRefine);
+            var lotsRefine = new LotsRefine(this, estatesXmlStream);
+            var assetsRefine = new AssetsRefine(this, assetsXmlStream, estatesRefine, buildingsRefine, Config["DaluxFMUniqueColumns"]);
 
             if (ingestToDataLake)
             {

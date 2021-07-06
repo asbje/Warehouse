@@ -6,11 +6,11 @@ using Warehouse.Modules.Eloverblik.Refine.Models;
 
 namespace Warehouse.Modules.Eloverblik.Refine
 {
-    public class MeteringReadingsRefine : BaseRefine
+    public class MeteringReadingsRefine : RefineBase
     {
         public IEnumerable<MeteringReading> Data { get; set; }
 
-        public MeteringReadingsRefine(string moduleName, string tableName, HttpResponseMessage response) : base(moduleName, tableName)
+        public MeteringReadingsRefine(IExporter exporter, string tableName, HttpResponseMessage response) : base(exporter, tableName)
         {
             if (response.IsSuccessStatusCode)
                 Data = JsonConvert.DeserializeObject<MeteringReadingResult>(response.Content.ReadAsStringAsync().Result)?.result;

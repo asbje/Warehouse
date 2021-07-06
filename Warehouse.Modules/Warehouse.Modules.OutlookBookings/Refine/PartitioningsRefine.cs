@@ -5,12 +5,12 @@ using Warehouse.Modules.OutlookBookings.Refine.PartitionBookings;
 
 namespace Warehouse.Modules.OutlookBookings.Refine
 {
-    public class PartitioningsRefine : BaseRefine
+    public class PartitioningsRefine : RefineBase
     {
         private readonly BookingsRefine bookingsRefine;
         private readonly LocationsRefine locationsRefine;
 
-        public PartitioningsRefine(string moduleName, BookingsRefine bookingsRefine, LocationsRefine locationsRefine) : base(moduleName, "bookings")
+        public PartitioningsRefine(IExporter exporter, BookingsRefine bookingsRefine, LocationsRefine locationsRefine) : base(exporter, "bookings")
         {
             this.bookingsRefine = bookingsRefine;
             this.locationsRefine = locationsRefine;

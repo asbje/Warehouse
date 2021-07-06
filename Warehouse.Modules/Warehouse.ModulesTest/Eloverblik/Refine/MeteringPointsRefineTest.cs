@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Warehouse.Common.CsvTools;
+using Warehouse.Modules;
 using Warehouse.Modules.Eloverblik.Refine;
 using Warehouse.ModulesTest.Helpers;
 
@@ -15,7 +16,8 @@ namespace Warehouse.ModulesTest.Eloverblik.Refine
         {
             var meteringPoints = ExporterTest.GetData("MeteringPoints.json");
 
-            var meteringPointsRefine = new MeteringPointsRefine("Eloverblik", meteringPoints);
+            var exporter = new ExporterBase(null, null, "Eloverblik", "0 * * * *", null);
+            var meteringPointsRefine = new MeteringPointsRefine(exporter, meteringPoints);
             
             Assert.IsFalse(meteringPointsRefine.HasErrors);
 

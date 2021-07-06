@@ -17,10 +17,7 @@ namespace Warehouse.Common.CsvTools
         public Dictionary<int, Type> ColTypes { get; internal set; }
         public Dictionary<(int Col, int Row), object> Records { get; internal set; }
 
-        public CsvSet()
-        {
-            Init();
-        }
+        public CsvSet() => Init();
 
         public CsvSet(string headers)
         {
@@ -216,10 +213,7 @@ namespace Warehouse.Common.CsvTools
             {
                 var i = 2;
                 while (Headers.Any(o => o.Value.Equals(res)))
-                {
-                    res = value + "_" + i;
-                    i++;
-                }
+                    res = value + "_" + i++;
             }
             return res;
         }

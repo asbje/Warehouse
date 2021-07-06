@@ -15,13 +15,13 @@ namespace Warehouse.Common
     class DataLake
     {
         public readonly Uri ServiceUri;
-        public readonly IConfigurationRoot config;
-        public readonly string module;
-        public readonly string StorageAccountName;
-        public readonly string StorageAccountKey;
         public readonly string BasePath;
         public readonly string BaseDirectory;
         public readonly string SubDirectory;
+        //private readonly IConfigurationRoot config;
+        //private readonly string module;
+        private readonly string storageAccountName;
+        private readonly string storageAccountKey;
         private DataLakeServiceClient _dataLakeServiceClient;
 
         public DataLakeServiceClient DataLakeServiceClient
@@ -30,7 +30,7 @@ namespace Warehouse.Common
             {
                 if (_dataLakeServiceClient == null)
                 {
-                    var sharedKeyCredential = new StorageSharedKeyCredential(StorageAccountName, StorageAccountKey);
+                    var sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
                     _dataLakeServiceClient = new DataLakeServiceClient(ServiceUri, sharedKeyCredential);
                 }
                 return _dataLakeServiceClient;
@@ -41,14 +41,14 @@ namespace Warehouse.Common
         /// <param name="subDirectory">Såsom "current"</param>
         public DataLake(IConfigurationRoot config, string module, string subDirectory)
         {
-            this.config = config;
-            this.module = module;
+            //this.config = config;
+            //this.module = module;
             ServiceUri = new Uri(config["DataLakeServiceUrl"]);
             if (ServiceUri == null) throw new Exception("The value for DataLakeServiceUrl, has to be set in config.");
-            StorageAccountName = config["DataLakeAccountName"];
-            if (StorageAccountName == null) throw new Exception("The value for DataLakeAccountName, has to be set in config.");
-            StorageAccountKey = config["DataLakeAccountKey"];
-            if (StorageAccountKey == null) throw new Exception("The value for DataLakeAccountKey, has to be set in config.");
+            storageAccountName = config["DataLakeAccountName"];
+            if (storageAccountName == null) throw new Exception("The value for DataLakeAccountName, has to be set in config.");
+            storageAccountKey = config["DataLakeAccountKey"];
+            if (storageAccountKey == null) throw new Exception("The value for DataLakeAccountKey, has to be set in config.");
             BasePath = config["DataLakeBasePath"];
             if (BasePath == null) throw new Exception("The value for DataLakeBasePath, has to be set in config.");
 
@@ -56,29 +56,49 @@ namespace Warehouse.Common
             SubDirectory = subDirectory.ToLower();
         }
 
-        //public IEnumerable<CsvSet> GetDecodedFilesFromDataLake(string tableName, DateTime from, DateTime to)
-        //{
-        //    var res = new list<ingest>();
-        //    var filesystem = datalakeserviceclient.getfilesystemclient(basepath);
-        //    if (!filesystem.exists())
-        //        yield break;
+        public IEnumerable<KeyValuePair<DateTime, CsvSet>> GetDecodedFilesFromDataLake(string tableName, DateTime from, DateTime to)
+        {
+            var fileSystem = DataLakeServiceClient.GetFileSystemClient(BasePath);
+            if (!fileSystem.Exists())
+                yield break;
 
-        //    var directory = filesystem.getdirectoryclient(string.join('/', basedirectory, subdirectory));
-        //    if (!directory.exists())
-        //        yield break;
+            var directory = fileSystem.GetDirectoryClient(string.Join('/', BaseDirectory, Common.SubDirectory.decode));
+            if (!directory.Exists())
+                yield break;
 
-        //    foreach (var item in filesystem.getpaths(directory.path))
-        //        if (item.isdirectory == false && path.getextension(item.name).equals(".csv", stringcomparison.invariantcultureignorecase))
-        //        {
-        //            var fileclient = filesystem.getfileclient(item.name);
-        //            using var stream = fileclient.openread();
-        //            var table = path.getfilenamewithoutextension(item.name);
-        //            var ingest = new ingest(config, module, table, item.lastmodified.utcdatetime);
-        //            ingest.ingestcsv(stream, take);
-        //            yield return ingest;
-        //            res.add(ingest);
-        //        }
-        //}
+            foreach (var yearFolder in fileSystem.GetPaths(directory.Path).Where(o => o.IsDirectory == true))
+                if (int.TryParse(Path.GetFileName(yearFolder.Name), out int year))
+                    foreach (var monthFolder in fileSystem.GetPaths(yearFolder.Name).Where(o => o.IsDirectory == true))
+                        if (int.TryParse(Path.GetFileName(monthFolder.Name), out int month))
+                            foreach (var dayFolder in fileSystem.GetPaths(monthFolder.Name).Where(o => o.IsDirectory == true))
+                                if (int.TryParse(Path.GetFileName(dayFolder.Name), out int day))
+                                {
+                                    var res = GetStream(fileSystem, directory, tableName, from, to, year, month, day, 0);
+                                    if (res != null)
+                                        yield return (KeyValuePair<DateTime, CsvSet>)res;
+
+                                    foreach (var hourFolder in fileSystem.GetPaths(dayFolder.Name).Where(o => o.IsDirectory == true))
+                                        if (int.TryParse(Path.GetFileName(hourFolder.Name), out int hour))
+                                        {
+                                            res = GetStream(fileSystem, directory, tableName, from, to, year, month, day, hour);
+                                            if (res != null)
+                                                yield return (KeyValuePair<DateTime, CsvSet>)res;
+                                        }
+                                }
+        }
+
+        private KeyValuePair<DateTime, CsvSet>? GetStream(DataLakeFileSystemClient fileSystem, DataLakeDirectoryClient directory, string tableName, DateTime from, DateTime to, int year, int month, int day, int hour = 0)
+        {
+            var date = new DateTime(year, month, day, hour, 0, 0);
+            var item = fileSystem.GetPaths(directory.Path).SingleOrDefault(o => o.IsDirectory == false && Path.GetExtension(o.Name).Equals(".csv", StringComparison.InvariantCultureIgnoreCase) && Path.GetFileNameWithoutExtension(o.Name).Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
+            if (item != null && from <= date && date <= to)
+            {
+                var fileclient = fileSystem.GetFileClient(item.Name);
+                using var stream = fileclient.OpenRead();
+                return new KeyValuePair<DateTime, CsvSet>(date, new CsvReader(stream).CsvSet);
+            }
+            return null;
+        }
 
         /// <param name="fileName">Såsom "Lots.csv"</param>
         internal void SaveCsvToDataLake(string fileName, CsvSet csv)

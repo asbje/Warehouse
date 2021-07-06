@@ -1,4 +1,4 @@
-# Warehouse.DataLake
+# Warehouse
 
 This solution makes it easy to write c# modules that fetches data from different systems, and pushes data into an Azure data lake, that can contain large amounts of data.
 
@@ -8,4 +8,4 @@ It also handles creation of Common Data Models, that enables integrations betwee
 
 [02: From data lake to Power BI with data flows](Documentation/02_power-BI-integration-in-depth/index.md)
 
-[The license](License.md)
+[The license](/License.md)

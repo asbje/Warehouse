@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Warehouse.Common.CsvTools
+namespace Warehouse.DataLake.CsvTools
 {
     public class CsvReader
     {

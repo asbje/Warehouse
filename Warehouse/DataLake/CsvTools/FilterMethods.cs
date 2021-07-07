@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Warehouse.Common.CsvTools
+namespace Warehouse.DataLake.CsvTools
 {
     public static class FilterMethods
     {

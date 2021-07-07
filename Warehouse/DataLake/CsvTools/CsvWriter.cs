@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Warehouse.Common.CsvTools
+namespace Warehouse.DataLake.CsvTools
 {
     public static class CsvWriter
     {

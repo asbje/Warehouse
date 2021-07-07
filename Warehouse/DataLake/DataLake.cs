@@ -7,10 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Warehouse.Common.CsvTools;
+using Warehouse.DataLake.CsvTools;
 
 [assembly: InternalsVisibleTo("Warehouse.Common.Tests")]
-namespace Warehouse.Common
+namespace Warehouse.DataLake
 {
     class DataLake
     {
@@ -62,7 +62,7 @@ namespace Warehouse.Common
             if (!fileSystem.Exists())
                 yield break;
 
-            var directory = fileSystem.GetDirectoryClient(string.Join('/', BaseDirectory, Common.SubDirectory.decode));
+            var directory = fileSystem.GetDirectoryClient(string.Join('/', BaseDirectory, Warehouse.DataLake.SubDirectory.decode));
             if (!directory.Exists())
                 yield break;
 

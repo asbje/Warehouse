@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Warehouse.Common.CsvTools
+namespace Warehouse.DataLake.CsvTools
 {
     /// <summary>
     /// Converts dynamic data to a format that can be ingested to the datalake as csv

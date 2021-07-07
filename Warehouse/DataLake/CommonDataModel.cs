@@ -9,7 +9,7 @@ using System.Web;
 using Warehouse.Modules;
 
 [assembly: InternalsVisibleTo("Warehouse.Common.Tests")]
-namespace Warehouse.Common
+namespace Warehouse.DataLake
 {
     class CommonDataModel
     {

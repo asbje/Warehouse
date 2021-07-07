@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Warehouse.Common.CsvTools;
+using Warehouse.DataLake.CsvTools;
 using Warehouse.Modules;
 
-namespace Warehouse.Common
+namespace Warehouse.DataLake
 {
     /// <summary>
     /// Creates / updates a csv log with import informations

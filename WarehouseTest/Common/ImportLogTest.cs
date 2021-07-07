@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using Warehouse.Common;
-using Warehouse.Common.CsvTools;
+using Warehouse.DataLake;
+using Warehouse.DataLake.CsvTools;
 using WarehouseTest.Helpers;
 
 namespace WarehouseTest.Common

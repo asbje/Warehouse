@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using Warehouse.Common;
+using Warehouse.DataLake;
 using WarehouseTest.Helpers;
 
 namespace WarehouseTest.Common

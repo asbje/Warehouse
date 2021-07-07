@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration;
-using Warehouse.Common.CsvTools;
+using Warehouse.DataLake.CsvTools;
 
 [assembly: InternalsVisibleTo("WarehouseTest")]
-namespace Warehouse.Common
+namespace Warehouse.DataLake
 {
     class Ingest
     {

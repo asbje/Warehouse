@@ -4,8 +4,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Warehouse.Common;
-using Warehouse.Common.CsvTools;
+using Warehouse.DataLake;
+using Warehouse.DataLake.CsvTools;
 
 namespace Warehouse.Modules
 {
@@ -73,7 +73,7 @@ namespace Warehouse.Modules
 
         JObject IExporter.CreateCommonDataModel(List<IRefine> refines, bool uploadToDataLake)
         {
-            var dataLake = new Common.DataLake(Config, ModuleName, "current");
+            var dataLake = new DataLake.DataLake(Config, ModuleName, "current");
 
             if (!uploadToDataLake || refines.Any(o => o.IsUploaded))
             {
